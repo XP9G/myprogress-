@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress OS</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* LOGIN */
+
+#loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 380px;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+
+.login-box h1 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.login-box p {
+    text-align: center;
+    color: #6b7280;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    outline: none;
+}
+
+.login-box input:focus {
+    border-color: #2563eb;
+}
+
+.primary {
+    width: 100%;
+    border: 0;
+    background: #2563eb;
+    color: white;
+    padding: 13px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.primary:hover {
+    background: #1d4ed8;
+}
+
+.error {
+    color: #dc2626;
+    text-align: center;
+    margin-top: 12px;
+}
+
+/* APP */
+
+#app {
+    min-height: 100vh;
+}
+
+header {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.logout {
+    background: #ef4444;
+    color: white;
+    border: 0;
+    padding: 8px 13px;
+    border-radius: 8px;
+}
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 60px);
+}
+
+.sidebar {
+    width: 220px;
+    background: white;
+    border-right: 1px solid #e5e7eb;
+    padding: 15px;
+}
+
+.nav-btn {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    text-align: left;
+    padding: 12px;
+    border-radius: 9px;
+    margin-bottom: 5px;
+    color: #374151;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.content {
+    flex: 1;
+    padding: 25px;
+    max-width: 1200px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.section h2 {
+    margin-top: 0;
+}
+
+/* CARDS */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+}
+
+.card .number {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* FORMS */
+
+.form-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.form-row input,
+.form-row textarea,
+.form-row select {
+    flex: 1;
+    padding: 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    outline: none;
+}
+
+.form-row textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.add-btn {
+    background: #2563eb;
+    color: white;
+    border: 0;
+    padding: 11px 16px;
+    border-radius: 9px;
+}
+
+/* LIST */
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 11px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.item-text {
+    flex: 1;
+}
+
+.completed {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 0;
+    padding: 7px 10px;
+    border-radius: 7px;
+}
+
+.small-btn {
+    border: 0;
+    background: #e5e7eb;
+    padding: 7px 10px;
+    border-radius: 7px;
+}
+
+/* GOALS */
+
+.goal {
+    background: white;
+    border: 1px solid #e5e7eb;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2563eb;
+}
+
+/* TIMETABLE */
+
+.table-wrap {
+    overflow-x: auto;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 650px;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+th {
+    background: #f9fafb;
+}
+
+td input {
+    width: 100%;
+    border: 0;
+    padding: 7px;
+    background: transparent;
+    text-align: center;
+    outline: none;
+}
+
+/* REVIEW */
+
+.review-box {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #e5e7eb;
+}
+
+.review-box label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.review-box textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    padding: 10px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    header {
+        padding: 13px;
+    }
+
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        overflow-x: auto;
+        padding: 8px;
+    }
+
+    .nav-btn {
+        min-width: max-content;
+        width: auto;
+        margin: 0 3px;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-row .add-btn {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginScreen">
+    <div class="login-box">
+        <h1>Progress OS</h1>
+        <p>Your personal progress dashboard</p>
+
+        <input
+            id="username"
+            type="text"
+            placeholder="Username"
+            autocomplete="username"
+        >
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+        >
+
+        <button class="primary" onclick="login()">
+            Login
+        </button>
+
+        <div id="loginError" class="error"></div>
+    </div>
+</div>
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+
+<header>
+    <h1>Progress OS</h1>
+    <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="layout">
+
+<nav class="sidebar">
+
+    <button class="nav-btn active" onclick="showSection('dashboard', this)">
+        🏠 Dashboard
+    </button>
+
+    <button class="nav-btn" onclick="showSection('daily', this)">
+        📅 Daily Tasks
+    </button>
+
+    <button class="nav-btn" onclick="showSection('weekly', this)">
+        📆 Weekly Tasks
+    </button>
+
+    <button class="nav-btn" onclick="showSection('timetable', this)">
+        🕐 Timetable
+    </button>
+
+    <button class="nav-btn" onclick="showSection('goals', this)">
+        🎯 Goals
+    </button>
+
+    <button class="nav-btn" onclick="showSection('achievements', this)">
+        🏆 Achievements
+    </button>
+
+    <button class="nav-btn" onclick="showSection('review', this)">
+        📝 Weekly Review
+    </button>
+
+    <button class="nav-btn" onclick="showSection('progress', this)">
+        📊 Progress
+    </button>
+
+</nav>
+
+<main class="content">
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="section active">
+
+    <h2>Dashboard</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <div>Daily Tasks</div>
+            <div class="number" id="dashDaily">0</div>
+        </div>
+
+        <div class="card">
+            <div>Weekly Tasks</div>
+            <div class="number" id="dashWeekly">0</div>
+        </div>
+
+        <div class="card">
+            <div>Goals</div>
+            <div class="number" id="dashGoals">0</div>
+        </div>
+
+        <div class="card">
+            <div>Achievements</div>
+            <div class="number" id="dashAchievements">0</div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h3>Welcome to Progress OS</h3>
+        <p>
+            Use the sections to manage your daily tasks,
+            weekly goals, timetable and achievements.
+        </p>
+    </div>
+
+</section>
+
+<!-- DAILY -->
+
+<section id="daily" class="section">
+
+    <h2>Daily Tasks</h2>
+
+    <div class="form-row">
+        <input id="dailyInput" placeholder="Add a daily task...">
+        <button class="add-btn" onclick="addDaily()">
+            Add
+        </button>
+    </div>
+
+    <div id="dailyList" class="list"></div>
+
+</section>
+
+<!-- WEEKLY -->
+
+<section id="weekly" class="section">
+
+    <h2>Weekly Tasks</h2>
+
+    <div class="form-row">
+        <input id="weeklyInput" placeholder="Add a weekly task...">
+        <button class="add-btn" onclick="addWeekly()">
+            Add
+        </button>
+    </div>
+
+    <div id="weeklyList" class="list"></div>
+
+</section>
+
+<!-- TIMETABLE -->
+
+<section id="timetable" class="section">
+
+    <h2>Weekly Timetable</h2>
+
+    <div class="form-row">
+        <select id="timeDay">
+            <option>Saturday</option>
+            <option>Sunday</option>
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+        </select>
+
+        <input id="timeTime" placeholder="Time e.g. 08:00">
+
+        <input id="timeActivity" placeholder="Activity">
+
+        <button class="add-btn" onclick="saveTimetable()">
+            Save
+        </button>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Activity</th>
+                </tr>
+            </thead>
+
+            <tbody id="timetableBody"></tbody>
+        </table>
+    </div>
+
+</section>
+
+<!-- GOALS -->
+
+<section id="goals" class="section">
+
+    <h2>Goals</h2>
+
+    <div class="form-row">
+        <input id="goalInput" placeholder="Goal title...">
+
+        <input
+            id="goalProgress"
+            type="number"
+            min="0"
+            max="100"
+            value="0"
+            placeholder="Progress %"
+        >
+
+        <button class="add-btn" onclick="addGoal()">
+            Add
+        </button>
+    </div>
+
+    <div id="goalsList"></div>
+
+</section>
+
+<!-- ACHIEVEMENTS -->
+
+<section id="achievements" class="section">
+
+    <h2>Achievements</h2>
+
+    <div class="form-row">
+        <input
+            id="achievementInput"
+            placeholder="Add an achievement..."
+        >
+
+        <button class="add-btn" onclick="addAchievement()">
+            Add
+        </button>
+    </div>
+
+    <div id="achievementsList" class="list"></div>
+
+</section>
+
+<!-- REVIEW -->
+
+<section id="review" class="section">
+
+    <h2>Weekly Review</h2>
+
+    <div class="review-box">
+
+        <label>Week</label>
+
+        <input
+            id="reviewWeek"
+            type="week"
+        >
+
+    </div>
+
+    <div class="review-box">
+
+        <label>What did I accomplish?</label>
+
+        <textarea id="reviewAccomplished"></textarea>
+
+    </div>
+
+    <div class="review-box">
+
+        <label>What went well?</label>
+
+        <textarea id="reviewGood"></textarea>
+
+    </div>
+
+    <div class="review-box">
+
+        <label>What went badly?</label>
+
+        <textarea id="reviewBad"></textarea>
+
+    </div>
+
+    <div class="review-box">
+
+        <label>What should I improve?</label>
+
+        <textarea id="reviewImprove"></textarea>
+
+    </div>
+
+    <button class="add-btn" onclick="saveReview()">
+        Save Review
+    </button>
+
+</section>
+
+<!-- PROGRESS -->
+
+<section id="progress" class="section">
+
+    <h2>Progress</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <div>Completed Daily</div>
+            <div class="number" id="completedDaily">0</div>
+        </div>
+
+        <div class="card">
+            <div>Completed Weekly</div>
+            <div class="number" id="completedWeekly">0</div>
+        </div>
+
+        <div class="card">
+            <div>Average Goal Progress</div>
+            <div class="number" id="averageGoal">0%</div>
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+
+/* =========================
+   API
+========================= */
+
+const API = "https://progress-os-api.aoart20.workers.dev";
+
+let DATA = {
+    dailyTasks: [],
+    weeklyTasks: [],
+    goals: [],
+    achievements: [],
+    timetable: [],
+    reviews: []
+};
+
+/* =========================
+   API REQUEST
+========================= */
+
+async function api(path, options = {}) {
+
+    const config = {
+        credentials: "include",
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
+    };
+
+    const response = await fetch(API + path, config);
+
+    let data;
+
+    try {
+        data = await response.json();
+    } catch {
+        throw new Error("Invalid server response");
+    }
+
+    if (!response.ok) {
+        throw new Error(data.error || "Request failed");
+    }
+
+    return data;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+async function login() {
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const error =
+        document.getElementById("loginError");
+
+    error.textContent = "";
+
+    if (!username || !password) {
+        error.textContent =
+            "Enter username and password.";
+        return;
+    }
+
+    try {
+
+        await api("/api/login", {
+            method: "POST",
+            body: JSON.stringify({
+                username,
+                password
+            })
+        });
+
+        document
+            .getElementById("loginScreen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("app")
+            .classList.remove("hidden");
+
+        await loadData();
+
+    } catch (err) {
+
+        error.textContent =
+            err.message || "Login failed.";
+
+    }
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout() {
+
+    try {
+        await api("/api/logout", {
+            method: "POST"
+        });
+    } catch {}
+
+    document
+        .getElementById("app")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginScreen")
+        .classList.remove("hidden");
+
+    document.getElementById("password").value = "";
+}
+
+/* =========================
+   LOAD DATA
+========================= */
+
+async function loadData() {
+
+    try {
+
+        const result =
+            await api("/api/data");
+
+        DATA.dailyTasks =
+            result.dailyTasks || [];
+
+        DATA.weeklyTasks =
+            result.weeklyTasks || [];
+
+        DATA.goals =
+            result.goals || [];
+
+        DATA.achievements =
+            result.achievements || [];
+
+        DATA.timetable =
+            result.timetable || [];
+
+        DATA.reviews =
+            result.reviews || [];
+
+        renderAll();
+
+    } catch (err) {
+
+        console.error(err);
+
+        if (err.message === "Unauthorized") {
+
+            document
+                .getElementById("app")
+                .classList.add("hidden");
+
+            document
+                .getElementById("loginScreen")
+                .classList.remove("hidden");
+        }
+    }
+}
+
+/* =========================
+   RENDER ALL
+========================= */
+
+function renderAll() {
+
+    renderDaily();
+    renderWeekly();
+    renderGoals();
+    renderAchievements();
+    renderTimetable();
+
+    updateDashboard();
+    updateProgress();
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function showSection(id, button) {
+
+    document
+        .querySelectorAll(".section")
+        .forEach(section => {
+            section.classList.remove("active");
+        });
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+    button.classList.add("active");
+}
+
+/* =========================
+   DAILY
+========================= */
+
+async function addDaily() {
+
+    const input =
+        document.getElementById("dailyInput");
+
+    const title = input.value.trim();
+
+    if (!title) return;
+
+    try {
+
+        await api("/api/daily", {
+            method: "POST",
+            body: JSON.stringify({ title })
+        });
+
+        input.value = "";
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+async function toggleDaily(id, completed) {
+
+    try {
+
+        await api("/api/daily", {
+            method: "PUT",
+            body: JSON.stringify({
+                id,
+                completed: !completed
+            })
+        });
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+async function deleteDaily(id) {
+
+    if (!confirm("Delete this task?")) return;
+
+    try {
+
+        await api("/api/daily", {
+            method: "DELETE",
+            body: JSON.stringify({ id })
+        });
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+function renderDaily() {
+
+    const list =
+        document.getElementById("dailyList");
+
+    list.innerHTML = "";
+
+    if (DATA.dailyTasks.length === 0) {
+
+        list.innerHTML =
+            "<p>No daily tasks yet.</p>";
+
+        return;
+    }
+
+    DATA.dailyTasks.forEach(task => {
+
+        const item =
+            document.createElement("div");
+
+        item.className = "item";
+
+        item.innerHTML = `
+            <input
+                type="checkbox"
+                ${task.completed ? "checked" : ""}
+                onchange="toggleDaily(${task.id}, ${!!task.completed})"
+            >
+
+            <div class="item-text ${
+                task.completed ? "completed" : ""
+            }">
+                ${escapeHTML(task.title)}
+            </div>
+
+            <button
+                class="delete-btn"
+                onclick="deleteDaily(${task.id})"
+            >
+                Delete
+            </button>
+        `;
+
+        list.appendChild(item);
+
+    });
+}
+
+/* =========================
+   WEEKLY
+========================= */
+
+async function addWeekly() {
+
+    const input =
+        document.getElementById("weeklyInput");
+
+    const title = input.value.trim();
+
+    if (!title) return;
+
+    try {
+
+        await api("/api/weekly", {
+            method: "POST",
+            body: JSON.stringify({ title })
+        });
+
+        input.value = "";
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+async function toggleWeekly(id, completed) {
+
+    try {
+
+        await api("/api/weekly", {
+            method: "PUT",
+            body: JSON.stringify({
+                id,
+                completed: !completed
+            })
+        });
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+async function deleteWeekly(id) {
+
+    if (!confirm("Delete this task?")) return;
+
+    try {
+
+        await api("/api/weekly", {
+            method: "DELETE",
+            body: JSON.stringify({ id })
+        });
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+function renderWeekly() {
+
+    const list =
+        document.getElementById("weeklyList");
+
+    list.innerHTML = "";
+
+    if (DATA.weeklyTasks.length === 0) {
+
+        list.innerHTML =
+            "<p>No weekly tasks yet.</p>";
+
+        return;
+    }
+
+    DATA.weeklyTasks.forEach(task => {
+
+        const item =
+            document.createElement("div");
+
+        item.className = "item";
+
+        item.innerHTML = `
+            <input
+                type="checkbox"
+                ${task.completed ? "checked" : ""}
+                onchange="toggleWeekly(${task.id}, ${!!task.completed})"
+            >
+
+            <div class="item-text ${
+                task.completed ? "completed" : ""
+            }">
+                ${escapeHTML(task.title)}
+            </div>
+
+            <button
+                class="delete-btn"
+                onclick="deleteWeekly(${task.id})"
+            >
+                Delete
+            </button>
+        `;
+
+        list.appendChild(item);
+
+    });
+}
+
+/* =========================
+   GOALS
+========================= */
+
+async function addGoal() {
+
+    const title =
+        document.getElementById("goalInput")
+        .value.trim();
+
+    const progress =
+        Number(
+            document.getElementById("goalProgress")
+            .value
+        );
+
+    if (!title) return;
+
+    try {
+
+        await api("/api/goals", {
+            method: "POST",
+            body: JSON.stringify({
+                title,
+                progress: Math.max(
+                    0,
+                    Math.min(100, progress || 0)
+                )
+            })
+        });
+
+        document.getElementById("goalInput").value = "";
+        document.getElementById("goalProgress").value = 0;
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+async function updateGoal(id, title, progress) {
+
+    try {
+
+        await api("/api/goals", {
+            method: "PUT",
+            body: JSON.stringify({
+                id,
+                title,
+                progress
+            })
+        });
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+async function deleteGoal(id) {
+
+    if (!confirm("Delete this goal?")) return;
+
+    try {
+
+        await api("/api/goals", {
+            method: "DELETE",
+            body: JSON.stringify({ id })
+        });
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+function renderGoals() {
+
+    const container =
+        document.getElementById("goalsList");
+
+    container.innerHTML = "";
+
+    if (DATA.goals.length === 0) {
+
+        container.innerHTML =
+            "<p>No goals yet.</p>";
+
+        return;
+    }
+
+    DATA.goals.forEach(goal => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "goal";
+
+        const progress =
+            Math.max(
+                0,
+                Math.min(100, Number(goal.progress) || 0)
+            );
+
+        div.innerHTML = `
+
+            <strong>
+                ${escapeHTML(goal.title)}
+            </strong>
+
+            <div class="progress-bar">
+                <div
+                    class="progress-fill"
+                    style="width:${progress}%"
+                ></div>
+            </div>
+
+            <div style="display:flex;gap:8px;align-items:center;">
+
+                <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value="${progress}"
+                    id="goal-${goal.id}"
+                    style="width:90px;padding:7px;"
+                >
+
+                <button
+                    class="small-btn"
+                    onclick="
+                        updateGoal(
+                            ${goal.id},
+                            '${escapeJS(goal.title)}',
+                            Number(document.getElementById('goal-${goal.id}').value)
+                        )
+                    "
+                >
+                    Update
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteGoal(${goal.id})"
+                >
+                    Delete
+                </button>
+
+            </div>
+        `;
+
+        container.appendChild(div);
+
+    });
+}
+
+/* =========================
+   ACHIEVEMENTS
+========================= */
+
+async function addAchievement() {
+
+    const input =
+        document.getElementById("achievementInput");
+
+    const title = input.value.trim();
+
+    if (!title) return;
+
+    try {
+
+        await api("/api/achievements", {
+            method: "POST",
+            body: JSON.stringify({ title })
+        });
+
+        input.value = "";
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+async function deleteAchievement(id) {
+
+    if (!confirm("Delete this achievement?")) return;
+
+    try {
+
+        await api("/api/achievements", {
+            method: "DELETE",
+            body: JSON.stringify({ id })
+        });
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+function renderAchievements() {
+
+    const list =
+        document.getElementById("achievementsList");
+
+    list.innerHTML = "";
+
+    if (DATA.achievements.length === 0) {
+
+        list.innerHTML =
+            "<p>No achievements yet.</p>";
+
+        return;
+    }
+
+    DATA.achievements.forEach(item => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "item";
+
+        div.innerHTML = `
+
+            <div class="item-text">
+                🏆 ${escapeHTML(item.title)}
+            </div>
+
+            <button
+                class="delete-btn"
+                onclick="deleteAchievement(${item.id})"
+            >
+                Delete
+            </button>
+        `;
+
+        list.appendChild(div);
+
+    });
+}
+
+/* =========================
+   TIMETABLE
+========================= */
+
+async function saveTimetable() {
+
+    const day =
+        document.getElementById("timeDay").value;
+
+    const time =
+        document.getElementById("timeTime")
+        .value.trim();
+
+    const activity =
+        document.getElementById("timeActivity")
+        .value.trim();
+
+    if (!time || !activity) return;
+
+    try {
+
+        await api("/api/timetable", {
+            method: "POST",
+            body: JSON.stringify({
+                day,
+                time,
+                activity
+            })
+        });
+
+        document.getElementById("timeTime").value = "";
+        document.getElementById("timeActivity").value = "";
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+function renderTimetable() {
+
+    const body =
+        document.getElementById("timetableBody");
+
+    body.innerHTML = "";
+
+    DATA.timetable.forEach(item => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${escapeHTML(item.day)}</td>
+            <td>${escapeHTML(item.time)}</td>
+            <td>${escapeHTML(item.activity)}</td>
+        `;
+
+        body.appendChild(row);
+
+    });
+}
+
+/* =========================
+   REVIEW
+========================= */
+
+async function saveReview() {
+
+    const week =
+        document.getElementById("reviewWeek").value;
+
+    const accomplished =
+        document.getElementById("reviewAccomplished").value;
+
+    const good =
+        document.getElementById("reviewGood").value;
+
+    const bad =
+        document.getElementById("reviewBad").value;
+
+    const improve =
+        document.getElementById("reviewImprove").value;
+
+    if (!week) {
+
+        alert("Select a week first.");
+
+        return;
+    }
+
+    try {
+
+        await api("/api/review", {
+            method: "POST",
+            body: JSON.stringify({
+                week,
+                accomplished,
+                good,
+                bad,
+                improve
+            })
+        });
+
+        alert("Review saved.");
+
+        await loadData();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function updateDashboard() {
+
+    document.getElementById("dashDaily")
+        .textContent =
+        DATA.dailyTasks.length;
+
+    document.getElementById("dashWeekly")
+        .textContent =
+        DATA.weeklyTasks.length;
+
+    document.getElementById("dashGoals")
+        .textContent =
+        DATA.goals.length;
+
+    document.getElementById("dashAchievements")
+        .textContent =
+        DATA.achievements.length;
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+function updateProgress() {
+
+    const dailyCompleted =
+        DATA.dailyTasks.filter(
+            task => Number(task.completed) === 1
+        ).length;
+
+    const weeklyCompleted =
+        DATA.weeklyTasks.filter(
+            task => Number(task.completed) === 1
+        ).length;
+
+    let average = 0;
+
+    if (DATA.goals.length > 0) {
+
+        average =
+            DATA.goals.reduce(
+                (sum, goal) =>
+                    sum + Number(goal.progress || 0),
+                0
+            ) / DATA.goals.length;
+
+        average = Math.round(average);
+    }
+
+    document.getElementById("completedDaily")
+        .textContent =
+        dailyCompleted;
+
+    document.getElementById("completedWeekly")
+        .textContent =
+        weeklyCompleted;
+
+    document.getElementById("averageGoal")
+        .textContent =
+        average + "%";
+}
+
+/* =========================
+   SECURITY / HTML ESCAPE
+========================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function escapeJS(value) {
+
+    return String(value)
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "\\r");
+}
+
+/* =========================
+   STARTUP
+========================= */
+
+document
+    .getElementById("password")
+    .addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+            login();
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
