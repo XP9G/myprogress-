@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f6f5">
+<meta name="color-scheme" content="light dark">
+<title>Progress OS</title>
+<script>
+/* Theme runs before paint so there is no white flash in dark mode */
+function applyTheme(){var s=null;try{s=localStorage.getItem("progress-theme")}catch(e){}
+var t=(s==="dark"||s==="light")?s:(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
+document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==="dark"?"#0a1210":"#f4f6f5"}
+function toggleTheme(){var n=document.documentElement.dataset.theme==="dark"?"light":"dark";try{localStorage.setItem("progress-theme",n)}catch(e){}applyTheme()}
+applyTheme();matchMedia("(prefers-color-scheme:dark)").addEventListener("change",applyTheme);
+</script>
+<style>
+:root{--bg:#f4f6f5;--surface:#fff;--surface2:#eef2f0;--text:#14201c;--muted:#5f6f68;--line:#dfe6e2;--accent:#0f766e;--accent-soft:rgba(15,118,110,.11);--on-accent:#fff;--danger:#dc2626;--ok:#16a34a;--shadow:0 1px 2px rgba(20,32,28,.05),0 6px 20px rgba(20,32,28,.05);--nav-h:64px}
+[data-theme="dark"]{--bg:#0a1210;--surface:#111c19;--surface2:#172621;--text:#e8f2ee;--muted:#8fa59c;--line:#22332d;--accent:#2dd4bf;--accent-soft:rgba(45,212,191,.13);--on-accent:#04211c;--danger:#f87171;--ok:#4ade80;--shadow:0 1px 2px rgba(0,0,0,.3)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;transition:background .2s,color .2s}
+button,input,textarea,select{font:inherit;color:inherit}button{cursor:pointer;touch-action:manipulation}.hidden{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent);flex:none}
+/* Login */
+#loginScreen{min-height:100dvh;display:grid;place-items:center;padding:20px}
+.login-box{width:min(390px,100%);background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:var(--shadow)}
+.brand{font-size:28px;font-weight:800;text-align:center;letter-spacing:-.5px}.sub{text-align:center;color:var(--muted);margin:4px 0 22px}
+input,textarea,select{font-size:16px}
+.login-box input{width:100%;padding:13px 14px;margin:6px 0;border:1px solid var(--line);border-radius:12px;background:var(--surface2);outline:0}
+.login-box input:focus,.form-row input:focus,.form-row select:focus,.review-box textarea:focus,.review-box input:focus{border-color:var(--accent)}
+.primary,.add-btn{border:0;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:12px 18px;font-weight:700;min-height:46px}
+.primary{width:100%;margin-top:10px}.primary:active,.add-btn:active{transform:scale(.98)}.primary:disabled{opacity:.6}
+.error{color:var(--danger);text-align:center;margin-top:10px;font-size:14px;min-height:20px}
+/* Header */
+header{background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));position:sticky;top:0;z-index:20}
+.head-left{display:flex;align-items:center;gap:10px}.logo{width:36px;height:36px;border-radius:11px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:800}.head-title{font-weight:800;font-size:17px}
+.head-actions{display:flex;gap:8px}
+.icon-btn,.logout{border:1px solid var(--line);background:var(--surface2);border-radius:12px;min-width:44px;height:44px;padding:0 12px;display:grid;place-items:center}.logout{color:var(--danger);font-weight:600}
+.icon-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn .i-sun{display:none}[data-theme="dark"] .icon-btn .i-sun{display:block}[data-theme="dark"] .icon-btn .i-moon{display:none}
+/* Layout */
+.layout{display:flex;min-height:calc(100dvh - 65px)}
+.sidebar{width:230px;flex:none;background:var(--surface);border-right:1px solid var(--line);padding:14px;position:sticky;top:65px;height:calc(100dvh - 65px);overflow:auto}
+.nav-btn{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--muted);text-align:left;padding:11px 12px;border-radius:11px;margin:2px 0;font-weight:600}
+.nav-btn:hover{background:var(--surface2)}.nav-btn.active{background:var(--accent-soft);color:var(--accent)}.nav-ico{font-size:18px;line-height:1}
+.content{flex:1;min-width:0;max-width:1100px;padding:26px;margin:0 auto}
+.section{display:none}.section.active{display:block;animation:fade .18s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}
+.section-title{margin-bottom:18px}.section-title h2{margin:0;font-size:26px;letter-spacing:-.4px}.section-title p{margin:3px 0 0;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.card,.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.stat-label{color:var(--muted);font-size:13px}.stat-number{font-size:30px;font-weight:800;margin-top:2px;letter-spacing:-.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.panel h3{margin:0 0 10px;font-size:17px}
+.form-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.form-row input,.form-row select,.review-box textarea,.review-box input{flex:1 1 140px;min-width:0;padding:12px;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);outline:0}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:12px;min-height:56px}
+.item-text{flex:1;min-width:0;overflow-wrap:anywhere}.completed{text-decoration:line-through;color:var(--muted)}
+.delete-btn,.edit-btn{border:0;border-radius:10px;min-width:40px;height:40px;padding:0 10px;background:var(--surface2)}.delete-btn{color:var(--danger)}.edit-btn{color:var(--accent);font-weight:600}
+.goal{background:var(--surface);border:1px solid var(--line);padding:14px;border-radius:14px;margin-bottom:10px}
+.goal-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.goal input{padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);min-height:44px}.goal-title{flex:1;min-width:0}.goal-num{width:90px}
+.goal-actions{display:flex;gap:8px;align-items:center}
+.bar{height:9px;background:var(--surface2);border-radius:20px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;background:var(--accent);border-radius:20px;transition:width .35s}
+.days{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none}.days::-webkit-scrollbar{display:none}
+.day-btn{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:10px 16px;border-radius:12px;font-weight:700;min-height:44px}.day-btn.active{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.schedule-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.schedule-head h3{margin:0}
+.schedule-list{display:flex;flex-direction:column;gap:8px}
+.schedule-item{display:grid;grid-template-columns:70px 1fr auto;gap:10px;align-items:center;background:var(--surface2);border-radius:13px;padding:10px 12px}
+.schedule-time{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}.schedule-activity{font-weight:600;overflow-wrap:anywhere}.schedule-actions{display:flex;gap:6px}
+.empty{color:var(--muted);padding:22px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+.review-box{background:var(--surface);border:1px solid var(--line);padding:14px;border-radius:14px;margin-bottom:10px}.review-box label{display:block;font-weight:700;margin-bottom:7px}.review-box textarea{width:100%;min-height:95px;resize:vertical}
+.muted{color:var(--muted)}
+.seg{display:flex;background:var(--surface2);border-radius:14px;padding:4px;gap:4px;margin:14px 0}
+.seg button{flex:1;border:0;background:transparent;border-radius:11px;padding:10px 6px;font-weight:700;font-size:14px;color:var(--muted);min-height:44px}
+.seg button.on{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.daycard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.daycard.today{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.badge{background:var(--accent);color:var(--on-accent);border-radius:20px;padding:1px 9px;font-size:12px;font-weight:700;margin-left:8px}
+.count{background:var(--surface2);border-radius:20px;padding:2px 10px;font-size:13px;color:var(--muted);font-weight:600}
+.tl{position:relative;padding-left:22px}.tl:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.ev{position:relative;display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--surface2);border-radius:13px;padding:10px 12px;margin-bottom:10px}
+.ev:before{content:"";position:absolute;left:-21px;top:50%;margin-top:-6px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:3px solid var(--muted)}
+.ev.next{background:var(--accent-soft);outline:1.5px solid var(--accent)}.ev.next:before{border-color:var(--accent);background:var(--accent)}.ev.past{opacity:.55}
+.tag{font-size:12px;font-weight:700;color:var(--accent);margin-left:8px}
+#toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 14px);transform:translate(-50%,20px);background:var(--text);color:var(--bg);padding:11px 18px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:50;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}#toast.err{background:var(--danger);color:#fff}
+@media(max-width:850px){.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+/* Phone: bottom tab bar */
+@media(max-width:700px){
+.layout{display:block}.head-title{display:none}
+.sidebar{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:auto;z-index:30;display:flex;overflow-x:auto;border-right:0;border-top:1px solid var(--line);padding:6px 6px calc(env(safe-area-inset-bottom,0px) + 6px);scrollbar-width:none}
+.sidebar::-webkit-scrollbar{display:none}
+.nav-btn{flex:0 0 auto;width:auto;min-width:68px;flex-direction:column;gap:2px;padding:6px 8px;margin:0 1px;font-size:11px}.nav-ico{font-size:21px}
+.content{padding:16px 14px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 28px)}
+.section-title h2{font-size:23px}.stat-number{font-size:26px}
+.schedule-item{grid-template-columns:56px 1fr;gap:6px 10px}.schedule-actions{grid-column:2}
+.form-row .add-btn{flex:1 1 100%}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="loginScreen" class="hidden"><div class="login-box"><div class="brand">Progress OS</div><div class="sub">Your personal progress dashboard</div>
+<input id="username" placeholder="Username" autocomplete="username" autocapitalize="none" data-enter="focusPass"><input id="password" type="password" placeholder="Password" autocomplete="current-password" data-enter="login"><button id="loginBtn" class="primary" onclick="login()">Log in</button><div id="loginError" class="error" role="alert"></div></div></div>
+<div id="app" class="hidden">
+<header><div class="head-left"><div class="logo">P</div><div class="head-title">Progress OS</div></div>
+<div class="head-actions"><button class="icon-btn" onclick="toggleTheme()" aria-label="Switch between light and dark mode" title="Light / dark">
+<svg class="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+<svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+<button class="logout" onclick="logout()">Log out</button></div></header>
+<div class="layout">
+<nav class="sidebar" id="nav"></nav>
+<main class="content">
+<section id="dashboard" class="section active"><div class="section-title"><h2>Dashboard</h2><p>A quick view of your current system.</p></div>
+<div class="cards"><div class="card"><div class="stat-label">Daily tasks</div><div class="stat-number" id="dashDaily">0</div></div><div class="card"><div class="stat-label">Weekly tasks</div><div class="stat-number" id="dashWeekly">0</div></div><div class="card"><div class="stat-label">Goals</div><div class="stat-number" id="dashGoals">0</div></div><div class="card"><div class="stat-label">Achievements</div><div class="stat-number" id="dashAchievements">0</div></div></div>
+<div class="grid2"><div class="panel"><h3>Today</h3><div id="todaySummary" class="muted">Loading…</div><div class="bar"><i id="todayBar" style="width:0"></i></div></div><div class="panel"><h3>Goal progress</h3><div id="goalSummary" class="muted">No goals yet.</div><div class="bar"><i id="goalBar" style="width:0"></i></div></div></div></section>
+<section id="daily" class="section"><div class="section-title"><h2>Daily Tasks</h2><p>Small actions for today.</p></div><div class="form-row"><input id="dailyInput" placeholder="Add a daily task…" data-enter="addDaily"><button class="add-btn" onclick="addDaily()">＋ Add</button></div><div id="dailyList" class="list"></div></section>
+<section id="weekly" class="section"><div class="section-title"><h2>Weekly Tasks</h2><p>Tasks you want completed this week.</p></div><div class="form-row"><input id="weeklyInput" placeholder="Add a weekly task…" data-enter="addWeekly"><button class="add-btn" onclick="addWeekly()">＋ Add</button></div><div id="weeklyList" class="list"></div></section>
+<section id="timetable" class="section"><div class="section-title"><h2>Timetable</h2><p>Each day has its own schedule.</p></div><div class="panel"><div class="form-row" style="margin:0"><select id="timeDay"></select><input id="timeTime" type="time"><input id="timeActivity" placeholder="Activity" data-enter="saveTimetable"><button id="scheduleSaveBtn" class="add-btn" onclick="saveTimetable()">＋ Add</button></div></div><div class="seg" id="ttSeg"></div><div id="dayTabs" class="days"></div><div id="ttBody"></div></section>
+<section id="goals" class="section"><div class="section-title"><h2>Goals</h2><p>Track important goals from 0% to 100%.</p></div><div class="form-row"><input id="goalInput" placeholder="Goal title…" data-enter="addGoal"><input id="goalProgress" type="number" inputmode="numeric" min="0" max="100" value="0" placeholder="Progress %" style="flex:0 1 110px"><button class="add-btn" onclick="addGoal()">＋ Add</button></div><div id="goalsList"></div></section>
+<section id="achievements" class="section"><div class="section-title"><h2>Achievements</h2><p>Keep a record of things you completed.</p></div><div class="form-row"><input id="achievementInput" placeholder="Add an achievement…" data-enter="addAchievement"><button class="add-btn" onclick="addAchievement()">＋ Add</button></div><div id="achievementsList" class="list"></div></section>
+<section id="review" class="section"><div class="section-title"><h2>Weekly Review</h2><p>Reflect on the week and decide what to improve.</p></div><div class="review-box"><label for="reviewWeek">Week</label><input id="reviewWeek" type="week" onchange="loadReview()"></div><div class="review-box"><label>What did I accomplish?</label><textarea id="reviewAccomplished"></textarea></div><div class="review-box"><label>What went well?</label><textarea id="reviewGood"></textarea></div><div class="review-box"><label>What went badly?</label><textarea id="reviewBad"></textarea></div><div class="review-box"><label>What should I improve?</label><textarea id="reviewImprove"></textarea></div><button class="add-btn" onclick="saveReview()">Save review</button></section>
+<section id="progress" class="section"><div class="section-title"><h2>Progress</h2><p>Simple numbers from your stored data.</p></div><div class="cards"><div class="card"><div class="stat-label">Completed daily</div><div class="stat-number" id="completedDaily">0</div></div><div class="card"><div class="stat-label">Completed weekly</div><div class="stat-number" id="completedWeekly">0</div></div><div class="card"><div class="stat-label">Average goal progress</div><div class="stat-number" id="averageGoal">0%</div></div><div class="card"><div class="stat-label">Achievements</div><div class="stat-number" id="progressAchievements">0</div></div></div></section>
+</main></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const API="https://progress-os-api.aoart20.workers.dev";
+const DAYS=["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"];
+const NAV=[["dashboard","🏠","Home"],["daily","📅","Daily"],["weekly","📆","Weekly"],["timetable","🕐","Timetable"],["goals","🎯","Goals"],["achievements","🏆","Wins"],["review","📝","Review"],["progress","📊","Progress"]];
+let DATA={dailyTasks:[],weeklyTasks:[],goals:[],achievements:[],timetable:[],reviews:[]};
+let selectedDay=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];
+let editingScheduleId=null,toastTimer;
+const $=id=>document.getElementById(id);
+async function api(path,options={}){const r=await fetch(API+path,{credentials:"include",...options,headers:{"Content-Type":"application/json",...(options.headers||{})}});let d;try{d=await r.json()}catch{throw Error("Invalid server response")}if(!r.ok)throw Error(d.error||"Request failed");return d}
+function toast(m,err){const t=$("toast");t.textContent=m;t.className="show"+(err?" err":"");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.className="",2400)}
+async function act(path,method,body,ok){try{await api(path,{method,body:JSON.stringify(body)});await loadData();if(ok)toast(ok);return true}catch(e){toast(e.message,true);return false}}
+/* Auth: reuse the existing session cookie so you stay signed in */
+function showApp(){$("loginScreen").classList.add("hidden");$("app").classList.remove("hidden")}
+function showLogin(){$("app").classList.add("hidden");$("loginScreen").classList.remove("hidden")}
+async function init(){buildNav();initDays();try{await loadData(true);showApp()}catch{showLogin()}}
+async function login(){const u=$("username").value.trim(),p=$("password").value,err=$("loginError"),b=$("loginBtn");err.textContent="";if(!u||!p){err.textContent="Enter your username and password.";return}b.disabled=true;b.textContent="Logging in…";try{await api("/api/login",{method:"POST",body:JSON.stringify({username:u,password:p})});await loadData(true);showApp()}catch(e){err.textContent=e.message}b.disabled=false;b.textContent="Log in"}
+function focusPass(){$("password").focus()}
+async function logout(){try{await api("/api/logout",{method:"POST"})}catch{}location.reload()}
+async function loadData(strict){try{const r=await api("/api/data");DATA.dailyTasks=r.dailyTasks||[];DATA.weeklyTasks=r.weeklyTasks||[];DATA.goals=r.goals||[];DATA.achievements=r.achievements||[];DATA.timetable=r.timetable||[];DATA.reviews=r.reviews||[];renderAll()}catch(e){if(strict)throw e;if(e.message==="Unauthorized")location.reload();else toast("Could not refresh data.",true)}}
+function renderAll(){renderTasks();renderGoals();renderAchievements();initDays();renderSchedule();updateStats();if(!$("reviewWeek").value){$("reviewWeek").value=isoWeek();loadReview()}}
+/* Navigation */
+function buildNav(){$("nav").innerHTML=NAV.map(([id,ic,l],i)=>`<button class="nav-btn${i?"":" active"}" data-id="${id}" onclick="showSection('${id}')"><span class="nav-ico">${ic}</span><span>${l}</span></button>`).join("")}
+function showSection(id){document.querySelectorAll(".section").forEach(x=>x.classList.toggle("active",x.id===id));document.querySelectorAll(".nav-btn").forEach(x=>{const on=x.dataset.id===id;x.classList.toggle("active",on);if(on)x.scrollIntoView({inline:"center",block:"nearest"})});scrollTo({top:0})}
+/* Tasks (checkbox updates instantly, then syncs) */
+const addDaily=async()=>{const i=$("dailyInput"),title=i.value.trim();if(!title)return;if(await act("/api/daily","POST",{title}))i.value=""};
+const addWeekly=async()=>{const i=$("weeklyInput"),title=i.value.trim();if(!title)return;if(await act("/api/weekly","POST",{title}))i.value=""};
+async function toggleTask(kind,id){const list=kind==="daily"?DATA.dailyTasks:DATA.weeklyTasks,t=list.find(x=>x.id===id);if(!t)return;const prev=t.completed;t.completed=prev?0:1;renderTasks();updateStats();try{await api("/api/"+kind,{method:"PUT",body:JSON.stringify({id,completed:!prev})})}catch(e){t.completed=prev;renderTasks();updateStats();toast(e.message,true)}}
+const deleteTask=(kind,id)=>confirm("Delete this task?")&&act("/api/"+kind,"DELETE",{id});
+function taskHTML(kind,arr,msg){return arr.length?arr.map(t=>`<div class="item"><input type="checkbox" aria-label="Done" ${t.completed?"checked":""} onchange="toggleTask('${kind}',${t.id})"><div class="item-text ${t.completed?"completed":""}">${esc(t.title)}</div><button class="delete-btn" aria-label="Delete task" onclick="deleteTask('${kind}',${t.id})">🗑️</button></div>`).join(""):empty(msg)}
+function renderTasks(){$("dailyList").innerHTML=taskHTML("daily",DATA.dailyTasks,"No daily tasks yet. Add your first one above.");$("weeklyList").innerHTML=taskHTML("weekly",DATA.weeklyTasks,"No weekly tasks yet. Add your first one above.")}
+/* Timetable */
+function initDays(){$("timeDay").innerHTML=DAYS.map(d=>`<option ${d===selectedDay?"selected":""}>${d}</option>`).join("");$("dayTabs").innerHTML=DAYS.map(d=>`<button class="day-btn ${d===selectedDay?"active":""}" onclick="selectDay('${d}')">${d.slice(0,3)}</button>`).join("")}
+function selectDay(d){selectedDay=d;editingScheduleId=null;$("scheduleSaveBtn").textContent="＋ Add";$("timeTime").value="";$("timeActivity").value="";initDays();renderSchedule()}
+async function saveTimetable(){const day=$("timeDay").value,time=$("timeTime").value,activity=$("timeActivity").value.trim();if(!time||!activity){toast("Add a time and an activity.",true);return}if(await act("/api/timetable","POST",{id:editingScheduleId,day,time,activity}))selectDay(day)}
+let ttMode="tabs";try{ttMode=localStorage.getItem("progress-tt")||"tabs"}catch{}
+const TT_MODES=[["tabs","Day tabs"],["cards","All days"],["line","Timeline"]],TODAY_NAME=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];
+function setTT(m){ttMode=m;try{localStorage.setItem("progress-tt",m)}catch{}renderSchedule()}
+const dayList=d=>DATA.timetable.filter(x=>x.day===d).sort((a,b)=>a.time.localeCompare(b.time));
+const ttActs=x=>`<div class="schedule-actions"><button class="edit-btn" aria-label="Edit" onclick="editSchedule(${x.id})">✏️</button><button class="delete-btn" aria-label="Delete" onclick="deleteSchedule(${x.id})">🗑️</button></div>`;
+const ttRow=x=>`<div class="schedule-item"><div class="schedule-time">${esc(x.time)}</div><div class="schedule-activity">${esc(x.activity)}</div>${ttActs(x)}</div>`;
+const ttCount=l=>l.length+(l.length===1?" appointment":" appointments");
+function renderSchedule(){
+$("ttSeg").innerHTML=TT_MODES.map(([k,l])=>`<button class="${k===ttMode?"on":""}" onclick="setTT('${k}')">${l}</button>`).join("");
+$("dayTabs").classList.toggle("hidden",ttMode==="cards");let h;
+if(ttMode==="cards"){h=DAYS.map(d=>{const l=dayList(d),t=d===TODAY_NAME;return`<div class="daycard ${t?"today":""}"><div class="schedule-head"><h3>${d}${t?'<span class="badge">Today</span>':""}</h3><span class="count">${l.length}</span></div>${l.length?`<div class="schedule-list">${l.map(ttRow).join("")}</div>`:empty("Nothing scheduled.")}</div>`}).join("")}
+else{const l=dayList(selectedDay),now=new Date(),hm=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0"),isT=selectedDay===TODAY_NAME,nx=isT?l.findIndex(x=>x.time>=hm):-1;
+const body=!l.length?empty("Nothing scheduled for this day."):ttMode==="line"?`<div class="tl">${l.map((x,i)=>`<div class="ev ${i===nx?"next":""} ${isT&&x.time<hm?"past":""}"><div><div class="schedule-time">${esc(x.time)}${i===nx?'<span class="tag">Next</span>':""}</div><div class="schedule-activity">${esc(x.activity)}</div></div>${ttActs(x)}</div>`).join("")}</div>`:`<div class="schedule-list">${l.map(ttRow).join("")}</div>`;
+h=`<div class="panel"><div class="schedule-head"><h3>${selectedDay}</h3><span class="muted">${ttCount(l)}</span></div>${body}</div>`}
+$("ttBody").innerHTML=h}
+function editSchedule(id){const x=DATA.timetable.find(a=>a.id===id);if(!x)return;editingScheduleId=id;selectedDay=x.day;initDays();$("timeTime").value=x.time;$("timeActivity").value=x.activity;$("scheduleSaveBtn").textContent="Save changes";$("timeActivity").focus()}
+const deleteSchedule=id=>confirm("Delete this appointment?")&&act("/api/timetable","DELETE",{id});
+/* Goals */
+async function addGoal(){const title=$("goalInput").value.trim(),progress=clamp(Number($("goalProgress").value)||0);if(!title)return;if(await act("/api/goals","POST",{title,progress})){$("goalInput").value="";$("goalProgress").value=0}}
+const updateGoal=id=>act("/api/goals","PUT",{id,title:$("gt"+id).value.trim(),progress:clamp(Number($("gp"+id).value)||0)},"Goal saved");
+const deleteGoal=id=>confirm("Delete this goal?")&&act("/api/goals","DELETE",{id});
+function renderGoals(){$("goalsList").innerHTML=DATA.goals.length?DATA.goals.map(g=>{const p=clamp(Number(g.progress)||0);return`<div class="goal"><div class="goal-head"><input class="goal-title" id="gt${g.id}" value="${esc(g.title)}" aria-label="Goal title"><b>${p}%</b></div><div class="bar"><i style="width:${p}%"></i></div><div class="goal-actions"><input class="goal-num" id="gp${g.id}" type="number" inputmode="numeric" min="0" max="100" value="${p}" aria-label="Progress percent"><button class="edit-btn" onclick="updateGoal(${g.id})">Save</button><button class="delete-btn" aria-label="Delete goal" onclick="deleteGoal(${g.id})">🗑️</button></div></div>`}).join(""):empty("No goals yet. Add one above and set its progress.")}
+/* Achievements */
+const addAchievement=async()=>{const i=$("achievementInput"),title=i.value.trim();if(!title)return;if(await act("/api/achievements","POST",{title}))i.value=""};
+const deleteAchievement=id=>confirm("Delete this achievement?")&&act("/api/achievements","DELETE",{id});
+function renderAchievements(){$("achievementsList").innerHTML=DATA.achievements.length?DATA.achievements.map(x=>`<div class="item"><div class="item-text">🏆 ${esc(x.title)}</div><button class="delete-btn" aria-label="Delete" onclick="deleteAchievement(${x.id})">🗑️</button></div>`).join(""):empty("No achievements yet. Log what you finish.")}
+/* Review */
+async function saveReview(){const week=$("reviewWeek").value;if(!week){toast("Select a week first.",true);return}await act("/api/review","POST",{week,accomplished:$("reviewAccomplished").value,good:$("reviewGood").value,bad:$("reviewBad").value,improve:$("reviewImprove").value},"Review saved")}
+function loadReview(){const r=DATA.reviews.find(x=>x.week===$("reviewWeek").value);$("reviewAccomplished").value=r?.accomplished||"";$("reviewGood").value=r?.good||"";$("reviewBad").value=r?.bad||"";$("reviewImprove").value=r?.improve||""}
+function isoWeek(d=new Date()){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);const y=t.getUTCFullYear();return y+"-W"+String(Math.ceil(((t-Date.UTC(y,0,1))/864e5+1)/7)).padStart(2,"0")}
+/* Stats */
+function updateStats(){const dd=DATA.dailyTasks,dn=dd.filter(x=>Number(x.completed)===1).length,wn=DATA.weeklyTasks.filter(x=>Number(x.completed)===1).length,avg=DATA.goals.length?Math.round(DATA.goals.reduce((a,g)=>a+Number(g.progress||0),0)/DATA.goals.length):0;
+$("dashDaily").textContent=dd.length;$("dashWeekly").textContent=DATA.weeklyTasks.length;$("dashGoals").textContent=DATA.goals.length;$("dashAchievements").textContent=DATA.achievements.length;
+$("todaySummary").textContent=dd.length?`${dn} of ${dd.length} daily tasks completed.`:"No daily tasks yet.";$("todayBar").style.width=(dd.length?Math.round(dn/dd.length*100):0)+"%";
+$("goalSummary").textContent=DATA.goals.length?`Average progress: ${avg}%.`:"No goals yet.";$("goalBar").style.width=avg+"%";
+$("completedDaily").textContent=dn;$("completedWeekly").textContent=wn;$("averageGoal").textContent=avg+"%";$("progressAchievements").textContent=DATA.achievements.length}
+/* Helpers */
+const empty=t=>`<div class="empty">${t}</div>`,clamp=n=>Math.max(0,Math.min(100,n));
+const esc=v=>String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+document.addEventListener("keydown",e=>{const f=e.target.dataset&&e.target.dataset.enter;if(e.key==="Enter"&&f&&typeof window[f]==="function"){e.preventDefault();window[f]()}});
+init();
+</script>
+</body></html>
